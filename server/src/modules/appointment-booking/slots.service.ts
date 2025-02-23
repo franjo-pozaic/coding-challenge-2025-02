@@ -22,5 +22,5 @@ export class SlotsService {
 
     async bookSlot(id: number, name: string) {
         return this.slotsRepository.bookSlot(id, name);
-    }w
+    }
 }
