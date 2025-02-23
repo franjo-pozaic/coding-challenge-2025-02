@@ -1,32 +1,89 @@
 import type { DatePickerProps } from 'antd';
-import {  DatePicker, Form, Card, Flex, Button } from 'antd';
-
-const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-  console.log(date, dateString);
-};
-
-const disabledDate: DatePickerProps['disabledDate'] = (current) => {
-    return current && current.isSame('2025-02-20');
-};
+import {  DatePicker, Form, Card, Modal, Spin, Alert } from 'antd';
+import { Suspense, useState } from 'react';
+import { ConfirmationForm } from './ConfirmationForm';
+import { getTimeDiffInMinutes } from '../utils/timeDiff';
+import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
+import { SlotSelection } from './SlotSelection';
+import { fetchSlots } from '../api/slotsApi';
+import { SlotDto } from '../types';
+import { useBooking } from './useBooking';
 
 
 export const AppointmentBooking: React.FC = () => {
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedSlot, setSelectedSlot] = useState<SlotDto>();
+    const [name, setName] = useState('');
+    const [slotsPromise, setSlotsPromise] = useState<Promise<SlotDto[]>>();
+    const { bookAppointment, bookingFailed, loading  } = useBooking();
+    const [bookedSlots, setBookedSlots] = useState<SlotDto[]>([]);
+
+    const handleDateChange: DatePickerProps['onChange'] = (date, dateString) => {
+        console.log(date.toISOString(), dateString);
+        setSlotsPromise(fetchSlots(date.toISOString()));
+    };
+
+    function handlePickSlot(slot: SlotDto): void {
+        setSelectedSlot(slot);
+        setOpenModal(true);
+    }
+
+    async function handleConfirmBooking() {
+        if (!selectedSlot) {
+            return;
+        }
+
+        const success = await bookAppointment(selectedSlot.id, name);
+        
+        if (success) {
+            setOpenModal(false);
+            setSelectedSlot(undefined);
+            setName('');
+            setBookedSlots(s => [...s, selectedSlot]);
+        }
+    }
+
+    function handleCancelModal() {
+        setOpenModal(false);
+    }
+
+    function handleNameChange(value: string) {
+        setName(value);
+    }
+
     return <div>
-        <Card style={{maxWidth: "350px"}} title="Book an appointment">
+        <Card style={{ minWidth: "350px", maxWidth: "350px"}} title="Book an appointment">
             <Form  layout='horizontal'>
                 <Form.Item label="Date">
-                    <DatePicker disabledDate={disabledDate}  onChange={onChange} />
+                    <DatePicker onChange={handleDateChange} />
                 </Form.Item>
                 <Form.Item label="Pick a slot">
                 </Form.Item>
-                <Flex  justify="flex-start" align="flex-start" gap="small" wrap={'wrap'}>
-                    <Button type="primary">13:00</Button>
-                    <Button type="primary">14:00</Button>
-                    <Button type="primary">15:00</Button>
-                    <Button type="primary">16:00</Button>
-                    <Button type="primary">17:00</Button>
-                </Flex>
+                <ErrorBoundary description="Something went wrong" message="Error">
+                    <Suspense fallback={<Spin />}>
+                        { slotsPromise && <SlotSelection bookedSlots={bookedSlots} slotsPromise={slotsPromise} onSlotPicked={handlePickSlot} /> }
+                    </Suspense>
+                </ErrorBoundary>
             </Form>
+            <Modal
+                title="Book this slot?"
+                open={openModal}
+                onOk={handleConfirmBooking}
+                confirmLoading={loading}
+                onCancel={handleCancelModal}
+            >
+                { 
+                    selectedSlot && 
+                    <ConfirmationForm 
+                        date={selectedSlot.start_date}
+                        duration={getTimeDiffInMinutes(new Date(selectedSlot.start_date), new Date(selectedSlot.end_date))}
+                        onNameChange={handleNameChange} 
+                    />
+                }
+                {
+                    bookingFailed && <Alert message="Something went wrong" type="error" />
+                }
+            </Modal>
         </Card>
     </div>
 }
