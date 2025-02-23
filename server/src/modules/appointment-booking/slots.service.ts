@@ -1,11 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { SlotsRepository } from './slots.repository';
+import { DateTime } from 'luxon';
+import { SlotDto } from 'src/models/slotDto';
 
 @Injectable()
 export class SlotsService {
-    findSlots() {
-        return [
-            { "id": 1, "start_date": "2024-05-01T09:00:00.000Z", "booked": false }, 
-            { "id": 2, "start_date": "2024-05-01T10:00:00.000Z", "booked": true }
-        ]
+    constructor(private slotsRepository: SlotsRepository) { }
+
+    async findSlots(date: DateTime): Promise<SlotDto[]> {
+        const utcStart = date;
+        const utcEnd = date.plus({ days: 1 }).minus({ seconds: 1 });
+
+        const slots = await this.slotsRepository.getSlots(utcStart, utcEnd);
+        
+        return slots.map(x => ({
+            id: x.id,
+            booked: x.booked,
+            start_date: x.start_date
+        }));
     }
+
+    async bookSlot(id: number, name: string) {
+        return this.slotsRepository.bookSlot(id, name);
+    }w
 }
