@@ -1,16 +1,14 @@
 import { Alert, Button, Flex } from "antd";
-import { use } from "react";
 import { formatTime } from "../utils/formatTime";
 import { SlotDto } from "../types";
 
 type SlotSelectionProps = {
-    slotsPromise: Promise<SlotDto[]>;
+    slots: SlotDto[];
     onSlotPicked: (slot: SlotDto) => void;
     bookedSlots: SlotDto[];
 }
 
-export const SlotSelection: React.FC<SlotSelectionProps> = ({ slotsPromise, onSlotPicked, bookedSlots }) => {
-    const slots = use(slotsPromise);
+export const SlotSelection: React.FC<SlotSelectionProps> = ({ slots, onSlotPicked, bookedSlots }) => {
     const bookedIds = bookedSlots.map(x => x.id);
     const isBooked = (slot: SlotDto) => {
         return bookedIds.includes(slot.id);

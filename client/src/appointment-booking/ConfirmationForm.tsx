@@ -1,21 +1,49 @@
-import { Form, Input } from "antd"
-import { formatTime } from "../utils/formatTime";
+import { Form, Input, Modal } from "antd"
+import { formatTime, formatDate } from "../utils";
+import { useState } from "react";
 
 type ConfirmationFormProps = {
-    onNameChange: (value: string) => void;
     date: string;
+    openModal: boolean;
+    onConfirmBooking: (name: string) => void;
+    confirmLoading: boolean;
+    onCancel: () => void;
 }
 
 export const ConfirmationForm: React.FC<ConfirmationFormProps> = ({
     date, 
-    onNameChange
+    openModal,
+    onConfirmBooking,
+    confirmLoading,
+    onCancel
 }) => {
+    const [form] = Form.useForm();
+    const [name, setName] = useState('');
+
+    function handleOk() {
+        form.submit();
+        onConfirmBooking(name);
+    }
+
     return <>
-        <Form.Item label="Your name">
-            <Input onChange={(event) => onNameChange(event.target.value)} />
-        </Form.Item>
-        <p>Date: {date}</p>
-        <p>Time: {formatTime(date)}</p>
-        <p>Duration: 60 minutes</p>
+        <Modal
+                centered
+                title="Book this slot?"
+                open={openModal}
+                confirmLoading={confirmLoading}
+                onOk={handleOk}
+                onCancel={onCancel}
+                width={300}
+                okText="Book"
+            >
+            <Form form={form} requiredMark="optional">
+                <Form.Item rules={[{ required: true }]} name="Name" label="Your name">
+                    <Input onChange={(event) => setName(event.target.value)} />
+                </Form.Item>
+            </Form>
+            <p>Date: {formatDate(date)}</p>
+            <p>Time: {formatTime(date)}</p>
+            <p>Duration: 60 minutes</p>
+        </Modal>
     </>;
 }
