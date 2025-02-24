@@ -10,12 +10,12 @@ export class SlotsRepository {
 
     async getSlots(from: DateTime, to: DateTime): Promise<SlotDto[]> {
         const query = `
-            SELECT * 
+            SELECT id, start_date, booked
             FROM slots 
             WHERE start_date > $1 and start_date < $2`;
         const fromIso = from.toISO();
         const toIso = to.toISO();
-        const queryResult = await this.db.query(query, [fromIso, toIso]);
+        const queryResult = await this.db.query<SlotDto>(query, [fromIso, toIso]);
         return queryResult.rows;
     }
 
