@@ -14,14 +14,8 @@ export const ConfirmationForm: React.FC<ConfirmationFormProps> = ({
         <Form.Item label="Your name">
             <Input onChange={(event) => onNameChange(event.target.value)} />
         </Form.Item>
-        <Form.Item label="Date">
-            {date}
-        </Form.Item>
-        <Form.Item label="Time">
-            {formatTime(date)}
-        </Form.Item>
-        <Form.Item label="Duration">
-            60 minutes
-        </Form.Item>
+        <p>Date: {date}</p>
+        <p>Time: {formatTime(date)}</p>
+        <p>Duration: 60 minutes</p>
     </>;
 }

@@ -4,7 +4,7 @@ import { Suspense, useState } from 'react';
 import { ConfirmationForm } from './ConfirmationForm';
 import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
 import { SlotSelection } from './SlotSelection';
-import { fetchSlots } from '../api/slotsApi';
+import { getAvailableSlots } from '../api/slotsApi';
 import { SlotDto } from '../types';
 import { useBooking } from './useBooking';
 
@@ -19,7 +19,7 @@ export const AppointmentBooking: React.FC = () => {
 
     const handleDateChange: DatePickerProps['onChange'] = (date, dateString) => {
         console.log(date.toISOString(), dateString);
-        setSlotsPromise(fetchSlots(date.toISOString()));
+        setSlotsPromise(getAvailableSlots(date.toISOString()));
     };
 
     function handlePickSlot(slot: SlotDto): void {
@@ -65,11 +65,14 @@ export const AppointmentBooking: React.FC = () => {
                 </ErrorBoundary>
             </Form>
             <Modal
+                centered
                 title="Book this slot?"
                 open={openModal}
                 onOk={handleConfirmBooking}
                 confirmLoading={loading}
                 onCancel={handleCancelModal}
+                width={300}
+                okText="Book"
             >
                 { 
                     selectedSlot && 
