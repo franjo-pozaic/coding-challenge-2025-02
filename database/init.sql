@@ -6,6 +6,8 @@ create table if not exists slots (
     booked_by varchar(250) null
 );
 
+CREATE INDEX IF NOT EXISTS idx_slots_start_date ON slots (start_date);
+
 insert into slots (start_date, end_date, booked, booked_by) 
 values ('2024-05-01T09:00:00.000Z', '2024-05-01T10:00:00.000Z', false, NULL),
     ('2024-05-01T10:00:00.000Z', '2024-05-01T11:00:00.000Z', true, 'Customer 1'),
