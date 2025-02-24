@@ -1,4 +1,4 @@
-import { BookedSlotDto, BookSlotDto, SlotDto } from "../types";
+import type { BookedSlotDto, BookSlotDto, SlotDto } from "../types";
 
 export async function fetchSlots(dateIsoString: string): Promise<SlotDto[]> {
     const response = await fetch(`http://localhost:3000/slots?date=${dateIsoString}`);
