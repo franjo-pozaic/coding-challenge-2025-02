@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SlotsRepository } from './slots.repository';
 import { DateTime } from 'luxon';
-import { SlotDto } from 'src/models/slotDto';
+import { SlotDto } from 'src/types';
 
 @Injectable()
 export class SlotsService {

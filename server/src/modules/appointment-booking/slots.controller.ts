@@ -2,8 +2,7 @@ import { Body, Controller, Get, NotFoundException, Param, ParseDatePipe, ParseIn
 import { SlotsService } from './slots.service';
 import { ParseUtcDatePipe } from 'src/pipes/ParseUtcDatePipe';
 import { DateTime } from 'luxon';
-import { SlotDto } from 'src/models/slotDto';
-import { BookingDto } from 'src/models/bookingDto';
+import { BookingDto, BookedSlotDto, SlotDto } from 'src/types';
 import { ValidateBookingDto } from 'src/pipes/ValidateBookingDto';
 
 @Controller('slots')
@@ -18,7 +17,7 @@ export class SlotsController {
     }
 
     @Post(':id/book')
-    async bookSlot(@Param('id', ParseIntPipe) id: number, @Body(ValidateBookingDto) booking: BookingDto) {
+    async bookSlot(@Param('id', ParseIntPipe) id: number, @Body(ValidateBookingDto) booking: BookingDto): Promise<BookedSlotDto> {
         const bookingResponse = await this.slotsService.bookSlot(id, booking.name);
         
         if (!bookingResponse) {

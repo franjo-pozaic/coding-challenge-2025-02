@@ -1,5 +1,5 @@
 import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
-import { BookingDto } from 'src/models/bookingDto';
+import { BookingDto } from 'src/types';
 
 @Injectable()
 export class ValidateBookingDto implements PipeTransform<unknown, BookingDto | never> {

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PG_CONNECTION_TOKEN } from 'src/db.module';
 import type { PoolClient } from 'pg';
 import { DateTime } from 'luxon';
-import { SlotDto } from 'src/models/slotDto';
+import { BookedSlotDto, SlotDto } from 'src/types';
 
 @Injectable()
 export class SlotsRepository {
@@ -19,7 +19,7 @@ export class SlotsRepository {
         return queryResult.rows;
     }
 
-    async bookSlot(id: number, name: string): Promise<SlotDto[] | undefined> {
+    async bookSlot(id: number, name: string): Promise<BookedSlotDto | undefined> {
         const query = `
             UPDATE slots 
             SET booked = true, booked_by = $2 

@@ -3,3 +3,5 @@ export type SlotDto = {
     start_date: string,
     booked: boolean
 }
+
+export type BookedSlotDto = SlotDto & { booked: true }
