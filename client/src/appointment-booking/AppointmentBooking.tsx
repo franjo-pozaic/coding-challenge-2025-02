@@ -2,7 +2,6 @@ import type { DatePickerProps } from 'antd';
 import {  DatePicker, Form, Card, Modal, Spin, Alert } from 'antd';
 import { Suspense, useState } from 'react';
 import { ConfirmationForm } from './ConfirmationForm';
-import { getTimeDiffInMinutes } from '../utils/timeDiff';
 import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
 import { SlotSelection } from './SlotSelection';
 import { fetchSlots } from '../api/slotsApi';
@@ -76,7 +75,6 @@ export const AppointmentBooking: React.FC = () => {
                     selectedSlot && 
                     <ConfirmationForm 
                         date={selectedSlot.start_date}
-                        duration={getTimeDiffInMinutes(new Date(selectedSlot.start_date), new Date(selectedSlot.end_date))}
                         onNameChange={handleNameChange} 
                     />
                 }

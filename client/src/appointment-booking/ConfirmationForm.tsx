@@ -4,12 +4,10 @@ import { formatTime } from "../utils/formatTime";
 type ConfirmationFormProps = {
     onNameChange: (value: string) => void;
     date: string;
-    duration: number;
 }
 
 export const ConfirmationForm: React.FC<ConfirmationFormProps> = ({
     date, 
-    duration,
     onNameChange
 }) => {
     return <>
@@ -23,7 +21,7 @@ export const ConfirmationForm: React.FC<ConfirmationFormProps> = ({
             {formatTime(date)}
         </Form.Item>
         <Form.Item label="Duration">
-            {duration} minutes
+            60 minutes
         </Form.Item>
     </>;
 }
