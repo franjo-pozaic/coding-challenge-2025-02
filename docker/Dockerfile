@@ -2,7 +2,7 @@
 FROM postgres:16
 
 # Add the init.sql script to the Docker image
-COPY init.sql /docker-entrypoint-initdb.d/
+COPY database/init.sql /docker-entrypoint-initdb.d/
 
 # Set environment variables for PostgreSQL
 ENV POSTGRES_DB=coding-challenge
