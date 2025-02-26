@@ -58,10 +58,11 @@ export const AppointmentBooking: React.FC = () => {
                         { isFetching && <Spin indicator={<LoadingOutlined spin />} /> }
                     </Flex>
                 </Form.Item>
-                <Form.Item label="Pick a slot">
-                </Form.Item>
-                { slots && <SlotSelection bookedSlots={bookedSlots} slots={slots} onSlotPicked={handlePickSlot} /> }
-                { (isError || bookingMutation.isError) && <Alert message="Something went wrong" type="error" /> }
+                <p>Pick a slot:</p>
+                <Flex vertical gap="20px">
+                    { slots && <SlotSelection bookedSlots={bookedSlots} slots={slots} onSlotPicked={handlePickSlot} /> }
+                    { (isError || bookingMutation.isError) && <Alert  message="Something went wrong" type="error" /> }
+                </Flex>
             </Form>
                 { 
                     selectedSlot && 
